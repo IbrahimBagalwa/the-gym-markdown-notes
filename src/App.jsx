@@ -5,10 +5,11 @@ import Split from "react-split";
 import { nanoid } from "nanoid";
 
 const App = () => {
-  const noteFromLocalStorage = localStorage.getItem("notes");
-  const [notes, setNotes] = useState(
-    () => JSON.parse(noteFromLocalStorage) || []
-  );
+  const [notes, setNotes] = useState([]);
+  useEffect(() => {
+    const noteFromLocalStorage = localStorage.getItem("notes");
+    setNotes(() => JSON.parse(noteFromLocalStorage) || []);
+  }, []);
 
   const [currentNoteId, setCurrentNoteId] = useState(
     (notes[0] && notes[0].id) || ""
@@ -27,20 +28,20 @@ const App = () => {
     setNotes((prevNotes) => [newNote, ...prevNotes]);
     setCurrentNoteId(newNote.id);
   };
-
-  const updateNote = (text) => {
-    setNotes((oldNotes) => {
-      const updatedNoteArr = [];
-      for (let i = 0; i < oldNotes.length; i++) {
-        const oldNote = oldNotes[i];
-        if (oldNote.id === currentNoteId) {
-          updatedNoteArr.unshift({ ...oldNote, body: text });
-        } else {
-          updatedNoteArr.push(oldNote);
-        }
+  const updateNoteArr = (noteArr, text) => {
+    let updateNotesArr = [];
+    noteArr.forEach((note) => {
+      const oldnote = note;
+      if (oldnote.id === currentNoteId) {
+        updateNotesArr.unshift({ ...oldnote, body: text });
+      } else {
+        updateNotesArr.push(oldnote);
       }
-      return updatedNoteArr;
     });
+    return updateNotesArr;
+  };
+  const updateNote = (text) => {
+    setNotes((oldNotes) => updateNoteArr(oldNotes, text));
   };
 
   const deleteNote = (event, noteId) => {

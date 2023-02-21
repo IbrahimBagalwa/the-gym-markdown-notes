@@ -1,4 +1,5 @@
 import React from "react";
+import NoteElements from "./NoteElements";
 
 const Sidebar = ({
   notes,
@@ -7,30 +8,6 @@ const Sidebar = ({
   deleteNote,
   newNote,
 }) => {
-  const noteElements =
-    notes &&
-    notes.map((note) => {
-      let title = note.body.split(/[\n#]/)[1];
-      return (
-        <div key={note.id}>
-          <div
-            className={`title ${
-              note.id === currentNote.id ? "selected-note" : ""
-            }`}
-            onClick={() => setCurrentNoteId(note.id)}
-          >
-            <h4 className="text-snippet">{title}</h4>
-            <button
-              className="delete-btn"
-              onClick={(e) => deleteNote(e, note.id)}
-            >
-              <i className="gg-trash trash-icon"></i>
-            </button>
-          </div>
-        </div>
-      );
-    });
-
   return (
     <section className="pane sidebar">
       <div className="sidebar--header">
@@ -39,7 +16,14 @@ const Sidebar = ({
           +
         </button>
       </div>
-      {noteElements}
+      {notes && (
+        <NoteElements
+          notes={notes}
+          currentNote={currentNote}
+          setCurrentNoteId={setCurrentNoteId}
+          deleteNote={deleteNote}
+        />
+      )}
     </section>
   );
 };
